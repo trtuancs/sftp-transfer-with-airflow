@@ -2,6 +2,7 @@ version: '3'
 services:
 
   ########################### FTP Services:
+  #  Doc: https://github.com/garethflowers/docker-ftp-server
   ftp-source:
     container_name: ftp-source
     image: garethflowers/ftp-server
@@ -9,7 +10,7 @@ services:
       - FTP_PASS=source
       - FTP_USER=source
     volumes:
-      - ./ftp_source:/home/user
+      - ./ftp_source:/home/source
     ports:
       - '20-21:20-21'
       - '40000-40009:40000-40009'
@@ -21,10 +22,11 @@ services:
       - FTP_PASS=target
       - FTP_USER=target
     volumes:
-      - ./ftp_target:/home/user
+      - ./ftp_target:/home/target
     ports:
       - '30-31:20-21'
       - '40010-40019:40000-40009'
+
   ########################### Airflow Services:
   # Doc: https://hub.docker.com/r/bitnami/redis
   redis:
