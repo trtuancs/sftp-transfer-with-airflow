@@ -2,30 +2,18 @@ version: '3'
 services:
 
   ########################### FTP Services:
-  #  Doc: https://github.com/garethflowers/docker-ftp-server
-  ftp-source:
-    container_name: ftp-source
-    image: garethflowers/ftp-server
+  #  Doc: https://hub.docker.com/r/delfer/alpine-ftp-server
+  ftp-server:
+    container_name: ftp-server
+    image: delfer/alpine-ftp-server
     environment:
-      - FTP_PASS=source
-      - FTP_USER=source
+      - USERS=source|source target|target
     volumes:
-      - ./ftp_source:/home/source
+      - ./ftp_source:/ftp/source
+      - ./ftp_target:/ftp/target
     ports:
-      - '20-21:20-21'
-      - '40000-40009:40000-40009'
-
-  ftp-target:
-    container_name: ftp-target
-    image: garethflowers/ftp-server
-    environment:
-      - FTP_PASS=target
-      - FTP_USER=target
-    volumes:
-      - ./ftp_target:/home/target
-    ports:
-      - '30-31:20-21'
-      - '40010-40019:40000-40009'
+      - '21:21'
+      - '21000-21010:21000-21010'
 
   ########################### Airflow Services:
   # Doc: https://hub.docker.com/r/bitnami/redis
@@ -92,6 +80,7 @@ services:
     volumes:
       - ./dags:/opt/bitnami/airflow/dags
       - ./requirements.txt:/bitnami/python/requirements.txt
+      - ./history.log:/opt/history.log
     environment:
       - AIRFLOW__SCHEDULER__DAG_DIR_LIST_INTERVAL=10
       - AIRFLOW_SECRET_KEY=gu9sfREcbpyjhliIApYV57_iSmcJ2-2hwbpc36He10U=
@@ -109,6 +98,7 @@ services:
     volumes:
       - ./dags:/opt/bitnami/airflow/dags
       - ./requirements.txt:/bitnami/python/requirements.txt
+      - ./history.log:/opt/history.log
     environment:
       - AIRFLOW__SCHEDULER__DAG_DIR_LIST_INTERVAL=10
       - AIRFLOW_SECRET_KEY=gu9sfREcbpyjhliIApYV57_iSmcJ2-2hwbpc36He10U=
