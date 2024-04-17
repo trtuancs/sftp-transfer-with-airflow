@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from airflow import DAG
 from configs.ftps import FTPSource, FTPTarget
-from libs.ftp import integrate_ftp_server
+from libs.ftp_integration_with_history import integrate_ftp_server
 from airflow.operators.python import PythonOperator
 
 default_args = {
