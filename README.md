@@ -25,6 +25,8 @@
         <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#start-project">Start project</a></li>
+        <li><a href="#description-services">Description services</a></li>
+        <li><a href="#guide-to-the-project">Guide to the project</a></li>
         <li><a href="#stop-project">Stop project</a></li>
       </ul>
     </li>
@@ -56,15 +58,17 @@ Details of setting up project services can be found in the [docker-compose.yml](
 ## Project structure  
 ```
 |- dags/
-|   |- configs/
-|   |- libs/
+|   |- configs/                     # configs for dags
+|   |- libs/                        # functions for processing
 |   |- sftp_file_transfer_dag.py    # sftp file transfer dag
 |- images/
 |- .gitignore
 |- docker-compose.yml               # all services of project
-|- Dockerfile                       # dockerfile for airflow image
 |- README.md
 |- requirements.txt                 # libs need install for project
+|- ftp_source                       # storage of ftp source server
+|- ftp_target                       # storage of ftp target server
+|- history.log                      # store information about the files that have been transferred
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -76,9 +80,39 @@ Details of setting up project services can be found in the [docker-compose.yml](
 To run the project, you need to have **Docker** and **Docker Compose** installed.  
 
 ### Start project  
-To start project: ```docker-compose up -d```
+To start project: ```docker-compose up -d```  
+
+### Description services  
+- **ftp-server**: service for ftp source and ftp target  
+- **redis**: service for celery backend of airflow cluster  
+- **postgres**: backend database for airflow cluster  
+- **airflow-webserver**: Airflow webserver  
+- **airflow-scheduler**: Airflow scheduler  
+- **airflow-worker1**: Airflow worker  
+- **airflow-worker2**: Airflow worker  
+
+### Guide to the project  
+#### 1. Open Airflow Website Interface
+- Visit [localhost:8080](http://localhost:8080) to open airflow web interface. Use the username and password admin | admin respectively to log in  
+- On the main web screen, you will see one DAG named: **sftp_transfer_dag**  
+#### 2. Test dag  
+2.1 In the project directory, you will find two folders named: **ftp_source** and **ftp_target**  
+- **ftp_source**: the folder that stores files similar to the ftp source  
+- **ftp_target**: the folder that stores files similar to the ftp target (file transfer from ftp source)  
+
+2.2 Add files(can with folder structure) to ftp_source folder  
+2.3 On Airflow website, trigger dag then checking result in folder ftp_target  
 
 ### Stop project  
 To stop project: ```docker-compose down```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- Explain solution -->  
+## Explain solution  
+1. Read file from ftp source  
+2. Check if the file has been transferred previously    
+- If the file has been transferred in the past, it will be skipped  
+- If the file has not been transferred in the past, it will be transferred and note log to history.log file  
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
